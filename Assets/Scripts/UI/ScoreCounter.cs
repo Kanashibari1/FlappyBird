@@ -5,8 +5,6 @@ public class ScoreCounter : MonoBehaviour
 {
     public event Action OnValueChange;
 
-    public event Action NextPiped;
-
     public int CurrentScore {  get; private set; }
 
     public void AddValue()
