@@ -1,15 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PipeSpawner : MonoBehaviour
 {
-    [SerializeField] private PoolObject _poolObject;
+    [SerializeField] private Factory _factory;
     [SerializeField] private ObjectRemover _remover;
 
     private WaitForSeconds _sleep = new(2);
     private Coroutine _coroutine;
-    private List<PipePrefab> _allPipes = new();
 
     private int _upBound = 2;
     private int _downBound = -2;
@@ -36,12 +34,10 @@ public class PipeSpawner : MonoBehaviour
 
     private void Spawn()
     {
-        PipePrefab pipe = _poolObject.Get();
-        _allPipes.Add(pipe);
+        PipePrefab pipe = _factory.GetPipe();
         int bound = Random.Range(_upBound, _downBound);
         Vector3 spawnPoint = new(transform.position.x, bound, transform.position.z);
         pipe.transform.position = spawnPoint;
-        pipe.gameObject.SetActive(true);
     }
 
     private IEnumerator GeneratorPipe()
@@ -56,13 +52,12 @@ public class PipeSpawner : MonoBehaviour
 
     public void PutPipe(PipePrefab pipe)
     {
-        _poolObject.Put(pipe);
+        _factory.PutPipe(pipe);
     }
 
     public void Restart()
     {
-        _poolObject.Restart(_allPipes);
-        _allPipes.Clear();
+        _factory.Restart();
         StartCoroutine();
     }
 }

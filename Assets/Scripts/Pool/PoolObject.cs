@@ -1,47 +1,23 @@
 using System.Collections.Generic;
-using UnityEngine;
 
-public class PoolObject : MonoBehaviour
+public class PoolObject<T>
 {
-    [SerializeField] private Transform _position;
-    [SerializeField] private PipePrefab _pipePrefab;
+    private Queue<T> _pool = new();
 
-    private Queue<PipePrefab> _pool = new();
+    public Queue<T> Pool => _pool;
 
-    private void Create()
+    public void Add(T obj)
     {
-        PipePrefab pipe = Instantiate(_pipePrefab);
-        pipe.gameObject.SetActive(false);
+        _pool.Enqueue(obj);
+    }
+
+    public T Get()
+    {
+        return _pool.Dequeue();
+    }
+
+    public void Put(T pipe)
+    {
         _pool.Enqueue(pipe);
-    }
-
-    public PipePrefab Get()
-    {
-        if (_pool.Count == 0)
-        {
-            Create();
-        }
-
-        PipePrefab pipe = _pool.Dequeue();
-        pipe.transform.parent = _position;
-
-        return pipe;
-    }
-
-    public void Put(PipePrefab pipe)
-    {
-        pipe.gameObject.SetActive(false);
-        _pool.Enqueue(pipe);
-    }
-
-    public void Restart(List<PipePrefab> allPipes)
-    {
-        foreach (PipePrefab pipe in allPipes)
-        {
-            if (pipe.gameObject.activeSelf)
-            {
-                Put(pipe);
-            }
-        }
     }
 }
