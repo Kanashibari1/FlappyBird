@@ -1,13 +1,21 @@
+using Main;
 using UnityEngine;
 
-public class BirdTracker : MonoBehaviour
+public class BirdTracker : IGameTickables
 {
-    [SerializeField] private Bird _bird;
+    private Bird _bird;
+    private Camera _tracker;
 
-    void Update()
+    public BirdTracker(Bird bird,  Camera tracker)
     {
-        Vector2 position = transform.position;
+        _bird = bird;
+        _tracker = tracker;
+    }
+
+    public void Tick()
+    {
+        Vector2 position = _tracker.transform.position;
         position.x = _bird.transform.position.x;
-        transform.position = position;
+        _tracker.transform.position = position;
     }
 }

@@ -1,16 +1,29 @@
 using System.Collections;
 using UnityEngine;
+using Zenject;
+using Random = UnityEngine.Random;
 
 public class PipeSpawner : MonoBehaviour
 {
-    [SerializeField] private Factory _factory;
     [SerializeField] private ObjectRemover _remover;
-
+    
+    private Factory _factory;
     private WaitForSeconds _sleep = new(2);
     private Coroutine _coroutine;
 
     private int _upBound = 2;
     private int _downBound = -2;
+
+    [Inject]
+    private void Construct(Factory factory)
+    {
+        _factory = factory;
+    }
+
+    private void Awake()
+    {
+        Restart();
+    }
 
     private void OnEnable()
     {

@@ -1,7 +1,6 @@
 using System;
-using UnityEngine;
 
-public class ScoreCounter : MonoBehaviour
+public class ScoreCounter
 {
     public event Action OnValueChange;
 

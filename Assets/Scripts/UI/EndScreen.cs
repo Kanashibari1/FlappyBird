@@ -1,9 +1,17 @@
-using System;
+using Main;
+using UnityEngine;
+using Zenject;
 
-public class EndScreen : Window
+public class EndScreen : Window, IInitializable, IGameStopListener, IGameStartListener
 {
-    public event Action RestartButtonClicked;
+    private Game _game;
 
+    [Inject]
+    public void Construct(Game game)
+    {
+        _game = game;
+    }
+    
     public override void Close()
     {
         Button.interactable = false;
@@ -18,8 +26,21 @@ public class EndScreen : Window
         CanvasGroup.blocksRaycasts = true;
     }
 
-    protected override void OnButtonClick()
+    public void Initialize()
     {
-        RestartButtonClicked?.Invoke();
+        Close();
+    }
+    
+    public void OnStopGame()
+    {
+        Open();
+        Button.onClick.AddListener(_game.StartGame);
+        Time.timeScale = 0f;
+    }
+
+    public void OnStartGame()
+    {
+        Button.onClick.RemoveListener(_game.StartGame);
+        Close();
     }
 }

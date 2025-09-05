@@ -1,27 +1,23 @@
+using Main;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 [RequireComponent(typeof(TextMeshProUGUI))]
-public class ScoreView : MonoBehaviour
+public class ScoreView : IGameStartListener, IGameStopListener
 {
-    [SerializeField] private ScoreCounter _counter;
-    [SerializeField] private TextMeshProUGUI _endScore;
-
+    private TextMeshProUGUI _endScore;
+    private ScoreCounter _counter;
     private TextMeshProUGUI _score;
+    private Game _game;
 
-    private void Awake()
+    [Inject]
+    private void Construct(ScoreCounter counter,  TextMeshProUGUI score, TextMeshProUGUI endScore,  Game game)
     {
-        _score = GetComponent<TextMeshProUGUI>();
-    }
-
-    private void OnEnable()
-    {
-        _counter.OnValueChange += ChangeText;
-    }
-
-    private void OnDisable()
-    {
-        _counter.OnValueChange -= ChangeText;
+        _counter = counter;
+        _score = score;
+        _endScore = endScore;
+        _game = game;
     }
 
     private void ChangeText()
@@ -31,6 +27,17 @@ public class ScoreView : MonoBehaviour
 
     public void EndScore()
     {
-        _endScore.text = $"Ваш результат : {_counter.CurrentScore}";
+        _endScore.text = $"your score : {_counter.CurrentScore}";
+    }
+
+    public void OnStartGame()
+    {
+        _counter.OnValueChange += ChangeText;
+    }
+
+    public void OnStopGame()
+    {
+        _counter.OnValueChange -= ChangeText;
+        EndScore();
     }
 }

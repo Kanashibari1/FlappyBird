@@ -1,24 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Transform))]
-public class Factory : MonoBehaviour
+public class Factory
 {
-    [SerializeField] private PipePrefab _prefab;
-    
+    private PipePrefab _prefab;
     private Transform _container;
     private PoolObject<PipePrefab> _pool;
     private List<PipePrefab> _allPipes = new();
 
-    private void Awake()
+    public Factory(PipePrefab prefab,  Transform container)
     {
-        _container = GetComponent<Transform>();  
+        _container = container;
+        _prefab = prefab;
         _pool = new PoolObject<PipePrefab>();
     }
 
     private void CreatePipe()
     {
-        PipePrefab pipe = Instantiate(_prefab);
+        PipePrefab pipe = GameObject.Instantiate(_prefab);
         _pool.Add(pipe);
     }
 

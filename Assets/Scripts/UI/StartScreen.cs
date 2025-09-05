@@ -1,8 +1,16 @@
-using System;
+using Main;
+using UnityEngine;
+using Zenject;
 
-public class StartScreen : Window
+public class StartScreen : Window, IInitializable, IGameStartListener 
 {
-    public event Action PlayButtonClicked;
+    private Game _game;
+
+    [Inject]
+    public void Construct(Game game)
+    {
+        _game = game;
+    }
 
     public override void Close()
     {
@@ -18,8 +26,17 @@ public class StartScreen : Window
         CanvasGroup.blocksRaycasts = true;
     }
 
-    protected override void OnButtonClick()
+    public void Initialize()
     {
-        PlayButtonClicked?.Invoke();
+        Open();
+        Button.onClick.AddListener(_game.StartGame);
+        Time.timeScale = 0f;
+    }
+
+    public void OnStartGame()
+    {
+        Close();
+        Button.onClick.RemoveListener(_game.StartGame);
+        Time.timeScale = 1f;
     }
 }

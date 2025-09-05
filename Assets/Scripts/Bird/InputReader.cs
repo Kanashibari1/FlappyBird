@@ -1,13 +1,14 @@
 using System;
+using Main;
 using UnityEngine;
 
-public class InputReader : MonoBehaviour
+public class InputReader : IGameTickables
 {
-    KeyCode _jump = KeyCode.Space;
+    private KeyCode _jump = KeyCode.Space;
 
     public event Action Jumped;
 
-    private void Update()
+    public void Tick()
     {
         if (Input.GetKeyDown(_jump))
         {
